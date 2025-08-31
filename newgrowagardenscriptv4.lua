@@ -1,8 +1,11 @@
+-- ✅ Combined Script (Delta Warning + TOCHIPYRO UI with Trade Panel)
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 local rainbowSpeed = 0.5
 
--- Function to make rainbow text
+-- 🌈 Rainbow Text Function
 local function updateRainbowColor(textLabel)
 	local t = 0
 	while textLabel and textLabel.Parent do
@@ -15,15 +18,59 @@ local function updateRainbowColor(textLabel)
 	end
 end
 
--- Create ScreenGui
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+-- 📌 Main ScreenGui
+local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "TOCHIPYRO_UI"
 screenGui.ResetOnSpawn = false
 
--- Main UI Frame
+-- ⚠️ Delta Warning Frame
+local warningFrame = Instance.new("Frame", screenGui)
+warningFrame.Size = UDim2.new(0, 250, 0, 120)
+warningFrame.Position = UDim2.new(0.5, -125, 0.2, 0)
+warningFrame.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
+warningFrame.BorderSizePixel = 0
+warningFrame.Visible = true
+warningFrame.Active = true
+warningFrame.Draggable = true
+
+local warningCorner = Instance.new("UICorner", warningFrame)
+warningCorner.CornerRadius = UDim.new(0, 12)
+
+local warningTitle = Instance.new("TextLabel", warningFrame)
+warningTitle.Size = UDim2.new(1, 0, 0, 40)
+warningTitle.Text = "⚠️ DELTA WARNING"
+warningTitle.Font = Enum.Font.GothamBold
+warningTitle.TextScaled = true
+warningTitle.BackgroundTransparency = 1
+warningTitle.TextColor3 = Color3.new(1, 1, 1)
+
+local warningMsg = Instance.new("TextLabel", warningFrame)
+warningMsg.Size = UDim2.new(1, -20, 0, 60)
+warningMsg.Position = UDim2.new(0, 10, 0, 50)
+warningMsg.Text = "Exploit Detected!\nUse with caution."
+warningMsg.Font = Enum.Font.Gotham
+warningMsg.TextScaled = true
+warningMsg.TextColor3 = Color3.new(1, 1, 1)
+warningMsg.BackgroundTransparency = 1
+
+local closeWarn = Instance.new("TextButton", warningFrame)
+closeWarn.Size = UDim2.new(0, 30, 0, 30)
+closeWarn.Position = UDim2.new(1, -35, 0, 5)
+closeWarn.Text = "X"
+closeWarn.Font = Enum.Font.GothamBold
+closeWarn.TextScaled = true
+closeWarn.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+closeWarn.TextColor3 = Color3.new(1, 1, 1)
+local warnCorner = Instance.new("UICorner", closeWarn)
+warnCorner.CornerRadius = UDim.new(1, 0)
+closeWarn.MouseButton1Click:Connect(function()
+	warningFrame.Visible = false
+end)
+
+-- 📦 Main TOCHIPYRO Frame
 local mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Size = UDim2.new(0, 300, 0, 200)
-mainFrame.Position = UDim2.new(0.5, -150, 0.4, 0)
+mainFrame.Position = UDim2.new(0.5, -150, 0.45, 0)
 mainFrame.BackgroundTransparency = 0.5
 mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 mainFrame.BorderSizePixel = 0
@@ -33,11 +80,10 @@ mainFrame.Draggable = true
 mainFrame.Name = "MainUI"
 mainFrame.ClipsDescendants = true
 
--- UICorner
 local corner = Instance.new("UICorner", mainFrame)
 corner.CornerRadius = UDim.new(0, 12)
 
--- Title
+-- 🌈 Title
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, -30, 0, 30)
 title.Position = UDim2.new(0, 5, 0, 5)
@@ -48,7 +94,7 @@ title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.new(1,1,1)
 task.spawn(function() updateRainbowColor(title) end)
 
--- Minimize Button
+-- ⏬ Minimize Button
 local minimizeBtn = Instance.new("TextButton", mainFrame)
 minimizeBtn.Size = UDim2.new(0, 25, 0, 25)
 minimizeBtn.Position = UDim2.new(1, -30, 0, 5)
@@ -60,7 +106,6 @@ minimizeBtn.TextColor3 = Color3.new(1,1,1)
 local miniCorner = Instance.new("UICorner", minimizeBtn)
 miniCorner.CornerRadius = UDim.new(1, 0)
 
--- Minimize logic
 local minimized = false
 minimizeBtn.MouseButton1Click:Connect(function()
 	minimized = not minimized
@@ -73,9 +118,9 @@ minimizeBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Buttons
-local function createButton(text, posY)
-	local btn = Instance.new("TextButton", mainFrame)
+-- 🔘 Button Factory
+local function createButton(text, posY, parent)
+	local btn = Instance.new("TextButton", parent)
 	btn.Size = UDim2.new(0.8, 0, 0, 30)
 	btn.Position = UDim2.new(0.1, 0, 0, posY)
 	btn.Text = text
@@ -88,18 +133,19 @@ local function createButton(text, posY)
 	return btn
 end
 
-local tradeBtn = createButton("Open Trade Panel", 50)
-local bypassBtn = createButton("Bypass", 90)
-local closeBtn = createButton("Close UI", 130)
+-- Main Buttons
+local tradeBtn = createButton("Open Trade Panel", 50, mainFrame)
+local bypassBtn = createButton("Bypass", 90, mainFrame)
+local closeBtn = createButton("Close UI", 130, mainFrame)
 
 closeBtn.MouseButton1Click:Connect(function()
 	mainFrame:Destroy()
 end)
 
--- Trade Panel
+-- 📑 Trade Panel
 local tradePanel = Instance.new("Frame", screenGui)
 tradePanel.Size = UDim2.new(0, 300, 0, 220)
-tradePanel.Position = UDim2.new(0.5, 160, 0.4, 0)
+tradePanel.Position = UDim2.new(0.5, 160, 0.45, 0)
 tradePanel.BackgroundTransparency = 0.5
 tradePanel.BackgroundColor3 = Color3.fromRGB(90, 0, 150)
 tradePanel.Visible = false
@@ -108,7 +154,6 @@ tradePanel.Draggable = true
 local tradeCorner = Instance.new("UICorner", tradePanel)
 tradeCorner.CornerRadius = UDim.new(0, 12)
 
--- Trade Panel Title
 local tradeTitle = Instance.new("TextLabel", tradePanel)
 tradeTitle.Size = UDim2.new(1, 0, 0, 30)
 tradeTitle.Position = UDim2.new(0, 0, 0, 5)
@@ -120,14 +165,9 @@ tradeTitle.TextColor3 = Color3.new(1,1,1)
 task.spawn(function() updateRainbowColor(tradeTitle) end)
 
 -- Trade Panel Buttons
-local freezeBtn = createButton("Freeze Trade", 50)
-freezeBtn.Parent = tradePanel
-
-local autoAcceptBtn = createButton("Auto Accept", 90)
-autoAcceptBtn.Parent = tradePanel
-
-local closeTradeBtn = createButton("Close Panel", 130)
-closeTradeBtn.Parent = tradePanel
+local freezeBtn = createButton("Freeze Trade", 50, tradePanel)
+local autoAcceptBtn = createButton("Auto Accept", 90, tradePanel)
+local closeTradeBtn = createButton("Close Panel", 130, tradePanel)
 
 tradeBtn.MouseButton1Click:Connect(function()
 	tradePanel.Visible = true
@@ -137,7 +177,7 @@ closeTradeBtn.MouseButton1Click:Connect(function()
 	tradePanel.Visible = false
 end)
 
--- Toggle logic
+-- Toggle Functions
 local freezeOn = false
 freezeBtn.MouseButton1Click:Connect(function()
 	freezeOn = not freezeOn
